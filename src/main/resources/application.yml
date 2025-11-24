@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    include: secrets # 引入名为 "secrets" 的配置文件（即 application-secrets.yml,包含腾讯云信息）
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/big_event
+    username: root
+    password: root

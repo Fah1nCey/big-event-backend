@@ -1,0 +1,45 @@
+package com.fafa.bigeventbackend.controller;
+
+import com.fafa.bigeventbackend.common.Result;
+import com.fafa.bigeventbackend.contant.FileConstant;
+import com.fafa.bigeventbackend.manager.CosManager;
+import jakarta.annotation.Resource;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
+@RestController
+public class FileUploadController {
+
+    @Resource
+    private CosManager cosManager;
+
+    @PostMapping("/upload")
+    public Result<String> upload(@RequestPart("file") MultipartFile multipartFile){
+        // 保证文件名唯一，防止文件覆盖
+        String uuid = UUID.randomUUID().toString();
+        String fileName = uuid + "-" + multipartFile.getOriginalFilename();
+        String filePath = "Avator_upload/" + fileName;
+        File tempFile = null;
+        try {
+            // 创建一个临时文件来存储上传的内容(因为cosManager.putObject方法需要一个本地文件路径)
+            tempFile = File.createTempFile(filePath, null);
+            // 将上传的文件写入临时文件中
+            multipartFile.transferTo(tempFile);
+            cosManager.putObject(filePath, tempFile.getAbsolutePath());
+            return Result.success(FileConstant.COS_HOST + "/" + filePath);
+        } catch (IOException e) {
+            return Result.error("上传失败");
+        } finally {
+            if (tempFile != null) {
+                // 删除临时文件
+                tempFile.delete();
+            }
+        }
+    }
+}
