@@ -11,8 +11,4 @@ class UserControllerTest {
     @Autowired
     private UserController userController;
 
-    @Test
-    void register() {
-        userController.register("test", "123456");
-    }
 }

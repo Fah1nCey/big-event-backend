@@ -22,9 +22,6 @@ public class UpdateArticleRequest implements Serializable {
     //文章内容
     @NotEmpty(message = "内容不能为空")
     private String content;
-    //封面图像
-    @NotEmpty(message = "封面图片不能为空")
-    private String coverImg;
     //发布状态 已发布|草稿
     @State
     private String state;

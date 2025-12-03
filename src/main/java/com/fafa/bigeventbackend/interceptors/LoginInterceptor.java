@@ -17,6 +17,12 @@ public class LoginInterceptor implements HandlerInterceptor {
     // 请求拦截器
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+        // 关键改动：优先处理 OPTIONS 请求，直接放行
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
+
         String token = request.getHeader("Authorization");
         // 验证token
         try {

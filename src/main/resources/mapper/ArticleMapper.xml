@@ -4,16 +4,30 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fafa.bigeventbackend.mapper.ArticleMapper">
 
-    <select id="getArticleList" resultType="com.fafa.bigeventbackend.model.entity.Article">
-        select * from article
+<!--    <select id="getArticleList" resultType="com.fafa.bigeventbackend.model.entity.Article">-->
+<!--        select * from article-->
+<!--        <where>-->
+<!--            <if test="categoryId != null">-->
+<!--                category_id = #{categoryId}-->
+<!--            </if>-->
+<!--            <if test="state != null">-->
+<!--                and state = #{state}-->
+<!--            </if>-->
+<!--            and create_user = #{userId}-->
+<!--        </where>-->
+<!--    </select>-->
+
+    <select id="getArticleList" resultType="com.fafa.bigeventbackend.model.vo.ArticleListVO">
+        select a.id, a.title, a.state, a.create_time, c.category_name
+        from article a left join category c on a.category_id = c.id
         <where>
-            <if test="categoryId != null">
-                category_id = #{categoryId}
+            <if test="categoryId != null and categoryId != ''">
+                a.category_id = #{categoryId}
             </if>
-            <if test="state != null">
-                and state = #{state}
+            <if test="state != null and categoryId != ''">
+                and a.state = #{state}
             </if>
-            and create_user = #{userId}
+            and a.create_user = #{userId}
         </where>
     </select>
 

@@ -1,6 +1,7 @@
 package com.fafa.bigeventbackend.model.request;
 
 import com.fafa.bigeventbackend.anno.State;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -23,10 +24,6 @@ public class AddArticleRequest implements Serializable {
     //文章内容
     @NotEmpty(message = "文章内容不能为空")
     private String content;
-    //封面图像
-    @NotEmpty(message = "封面图像不能为空")
-    @URL(message = "封面图像格式不正确")
-    private String coverImg;
     //发布状态 已发布|草稿
     @NotEmpty(message = "发布状态不能为空")
     @State

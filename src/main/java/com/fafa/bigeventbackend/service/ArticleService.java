@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.fafa.bigeventbackend.model.entity.PageBean;
 import com.fafa.bigeventbackend.model.request.AddArticleRequest;
 import com.fafa.bigeventbackend.model.request.UpdateArticleRequest;
+import com.fafa.bigeventbackend.model.vo.ArticleListVO;
 
 /**
 * @author 86156
@@ -13,9 +14,9 @@ import com.fafa.bigeventbackend.model.request.UpdateArticleRequest;
 */
 public interface ArticleService extends IService<Article> {
 
-    void addArticle(AddArticleRequest article);
+    void addArticle(AddArticleRequest article, String coverImgCos);
 
-    PageBean<Article> getArticleList(Integer pageNum, Integer pageSize, String categoryId, String state);
+    PageBean<ArticleListVO> getArticleList(Integer pageNum, Integer pageSize, String categoryId, String state);
 
-    void updateArticle(UpdateArticleRequest articleRequest);
+    void updateArticle(UpdateArticleRequest articleRequest, String coverImgCos);
 }

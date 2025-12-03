@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fafa.bigeventbackend.model.entity.Article;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.fafa.bigeventbackend.model.request.AddArticleRequest;
+import com.fafa.bigeventbackend.model.vo.ArticleListVO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,13 +17,13 @@ import org.apache.ibatis.annotations.Param;
 public interface ArticleMapper extends BaseMapper<Article> {
 
     @Insert("insert into article (title, content, cover_img, state, category_id, create_user, create_time, update_time) " +
-            "values (#{article.title}, #{article.content}, #{article.coverImg}," +
-            " #{article.state}, #{article.categoryId}, #{createId}, now(), now())")
-    void addArticle(@Param("article") AddArticleRequest article, @Param("createId") Integer createId);
+            "values (#{title}, #{content}, #{coverImg}," +
+            " #{state}, #{categoryId}, #{createUser}, now(), now())")
+    void addArticle(Article article);
 
-    Page<Article> getArticleList(@Param("userId") Integer userId, Page<Article> page,
-                                 @Param("categoryId") String categoryId,
-                                 @Param("state") String state);
+    Page<ArticleListVO> getArticleList(@Param("userId") Integer userId, Page<ArticleListVO> page,
+                                       @Param("categoryId") String categoryId,
+                                       @Param("state") String state);
 
 }
 
