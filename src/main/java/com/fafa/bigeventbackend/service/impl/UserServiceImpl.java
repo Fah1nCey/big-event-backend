@@ -1,6 +1,7 @@
 package com.fafa.bigeventbackend.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fafa.bigeventbackend.manager.CosManager;
 import com.fafa.bigeventbackend.model.entity.User;
 import com.fafa.bigeventbackend.model.request.UpdateUserInfoRequest;
 import com.fafa.bigeventbackend.model.request.UpdateUserPwdRequest;
@@ -25,6 +26,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private CosManager cosManager;
+
     @Override
     public void register(String username, String password) {
         // 加密
@@ -44,9 +48,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public void updateAvatar(String avatarUrl) {
+        // 获取当前用户id
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer id = (Integer)map.get("id");
+        // 根据id查询用户,获取原头像路径
+        User user = this.getById(id);
+        String userPic = user.getUserPic();
+        // 根据id更新头像
         userMapper.updateAvatar(avatarUrl, id);
+        // 更新头像成功后，删除原头像(前提是有头像)
+        if (userPic != null) {
+            cosManager.deleteObject(userPic);
+        }
     }
 
     @Override

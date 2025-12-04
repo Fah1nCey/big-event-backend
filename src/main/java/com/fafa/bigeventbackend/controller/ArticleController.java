@@ -75,13 +75,18 @@ public class ArticleController {
     @PutMapping
     public Result updateArticle(
             @Validated @ModelAttribute UpdateArticleRequest articleRequest,
-            @RequestPart("coverImg") MultipartFile coverImg) {
+            @RequestPart(value = "coverImg", required = false) MultipartFile coverImg) {
         // 更新文章不需要将createUser作为查询条件，因为只有创建者能看到自己的文章（查找文章时指定了）
-        String coverImgCos = fileUploadController.upload(coverImg);
+        String coverImgCos = null;
+        if (coverImg != null && !coverImg.isEmpty()) {
+            coverImgCos = fileUploadController.upload(coverImg);
+        }
         try {
             articleService.updateArticle(articleRequest, coverImgCos);
         } catch (Exception e) {
-            cosManager.deleteObject(coverImgCos);
+            if (coverImgCos != null) {
+                cosManager.deleteObject(coverImgCos);
+            }
             throw e;
         }
         return Result.success();

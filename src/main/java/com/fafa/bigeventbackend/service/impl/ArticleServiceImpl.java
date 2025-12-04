@@ -2,6 +2,7 @@ package com.fafa.bigeventbackend.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fafa.bigeventbackend.manager.CosManager;
 import com.fafa.bigeventbackend.model.entity.Article;
 import com.fafa.bigeventbackend.model.entity.PageBean;
 import com.fafa.bigeventbackend.model.request.AddArticleRequest;
@@ -28,6 +29,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Autowired
     private ArticleMapper articleMapper;
+
+    @Autowired
+    private CosManager cosManager;
 
     @Override
     public void addArticle(AddArticleRequest addArticleRequest, String coverImgCos) {
@@ -62,11 +66,25 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Override
     public void updateArticle(UpdateArticleRequest articleRequest, String coverImgCos) {
+        // 获取旧文章对象
+        Article oldArticle = this.getById(articleRequest.getId());
+        // 创建一个新的 Article 对象，并将更新请求中的属性复制到新对象中
         Article article = new Article();
         BeanUtils.copyProperties(articleRequest, article);
-        article.setCoverImg(coverImgCos);
         article.setUpdateTime(new Date());
+        // 保持旧图（默认）
+        article.setCoverImg(oldArticle.getCoverImg());
+
+        // 如果有新图片，先替换字段，但不删除旧图
+        if (coverImgCos != null) {
+            // 有新图
+            article.setCoverImg(coverImgCos);
+        }
         this.updateById(article);
+        // 数据库更新成功之后，删除旧图片（如果有新图片）
+        if (coverImgCos != null) {
+            cosManager.deleteObject(oldArticle.getCoverImg());
+        }
     }
 
 }
